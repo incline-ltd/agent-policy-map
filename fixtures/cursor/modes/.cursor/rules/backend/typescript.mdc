@@ -1,0 +1,6 @@
+---
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+Use the backend TypeScript conventions.

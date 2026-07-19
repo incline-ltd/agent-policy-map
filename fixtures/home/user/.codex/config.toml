@@ -1,0 +1,3 @@
+# Fake Codex config for tests. Only two scalar keys are read, never executed.
+project_doc_max_bytes = 16384
+project_doc_fallback_filenames = ["CODEX.md", "GUIDE.md"]

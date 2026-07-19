@@ -1,0 +1,8 @@
+---
+description: TypeScript conventions
+globs: "**/*.ts"
+---
+
+# Auto-attached rule
+
+Attached automatically when a matching TypeScript file is in context.

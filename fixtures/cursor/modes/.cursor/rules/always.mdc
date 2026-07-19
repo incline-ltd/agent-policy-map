@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+# Always-applied rule
+
+This rule is always attached. See @helper.md for shared conventions.

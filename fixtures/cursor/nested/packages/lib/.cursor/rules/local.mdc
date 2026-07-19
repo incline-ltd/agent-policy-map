@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+# Library Cursor rule
+
+This nested rule applies only inside packages/lib.

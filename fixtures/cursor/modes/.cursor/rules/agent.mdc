@@ -1,0 +1,7 @@
+---
+description: Database migration guidance the agent can request when relevant
+---
+
+# Agent-requested rule
+
+The model decides whether to include this rule based on its description.

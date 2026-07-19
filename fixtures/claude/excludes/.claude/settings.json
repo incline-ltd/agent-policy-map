@@ -1,0 +1,3 @@
+{
+  "claudeMdExcludes": ["**/fixtures/claude/excludes/vendor/**"]
+}

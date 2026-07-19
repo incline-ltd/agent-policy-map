@@ -1,0 +1,72 @@
+name: Agent surface request
+description: Propose a new coding agent or a separately documented surface for an existing agent.
+title: "[surface]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Agent behavior changes quickly. Requests need current official documentation and a small public fixture; community assumptions are not enough to define precedence.
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request type
+      options:
+        - New surface for a supported agent
+        - New coding agent
+        - Missing instruction format on a supported surface
+    validations:
+      required: true
+
+  - type: input
+    id: agent-surface
+    attributes:
+      label: Agent and exact surface
+      placeholder: GitHub Copilot for VS Code
+    validations:
+      required: true
+
+  - type: input
+    id: documentation
+    attributes:
+      label: Official documentation
+      description: Link to the vendor documentation that defines discovery, matching, or activation behavior.
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: locations
+    attributes:
+      label: Instruction locations and formats
+      description: List documented project, nested, user, managed, and session locations relevant to this surface.
+    validations:
+      required: true
+
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Documented activation and ordering
+      description: Describe what is active, conditional, manual, excluded, or externally controlled. State when precedence is not defined.
+    validations:
+      required: true
+
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Proposed public fixture
+      description: Show the smallest fake directory tree that covers a match, exclusion, ambiguity, and failure case.
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Source and privacy check
+      options:
+        - label: The behavior above is sourced from current official vendor documentation for this exact surface.
+          required: true
+        - label: The proposed fixture contains no personal instructions, private paths, credentials, customer data, or internal content.
+          required: true

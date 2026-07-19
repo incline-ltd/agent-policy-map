@@ -1,0 +1,92 @@
+name: Wrong policy result
+description: Report an incorrect active, conditional, manual, excluded, or unknown-external result.
+title: "[policy result]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use a minimal public or fake fixture. Do not paste personal instructions, private paths, credentials, customer data, or internal operational content.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Modelled surface
+      options:
+        - Codex CLI
+        - Claude Code
+        - Cursor IDE
+        - GitHub Copilot CLI
+        - JSON or TypeScript library
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Agent Policy Map version
+      placeholder: 0.1.0 or commit SHA
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and Node.js version
+      placeholder: macOS 15 with Node.js 22
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Inspection command
+      description: Replace user names and private directories with generic paths.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal public fixture
+      description: Describe the fake directory tree and include only the smallest safe instruction samples needed to reproduce the result.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual redacted result
+      description: Include the source state, match reason, assumptions, and relevant diagnostic code.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: Explain the expected state and why the current result is incorrect.
+    validations:
+      required: true
+
+  - type: input
+    id: documentation
+    attributes:
+      label: Official behavior reference
+      description: Link to current vendor documentation for the exact agent and surface.
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I used public or fake instruction content and removed private paths, credentials, customer data, and internal details.
+          required: true
+        - label: I did not use `--include-user` output from a personal machine in this report.
+          required: true
