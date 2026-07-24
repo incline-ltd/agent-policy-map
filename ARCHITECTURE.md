@@ -56,6 +56,11 @@ versioned PolicyMap
         |
         +--> human renderer
         +--> JSON renderer
+        |
+        +--> compare composes four PolicyMaps
+                    |
+                    +--> cross-agent matrix
+                    +--> versioned PolicyComparison
 ```
 
 `src/core/inspect.ts` owns this orchestration. Adapters do not render output or
@@ -83,6 +88,13 @@ the project read boundary.
 the launch context and marks target-dependent sources as conditional rather
 than pretending they are universally active.
 
+`compare` runs the same bounded inspection independently for each registered
+agent. It groups the already-redacted sources by display path and reports a
+meaningful difference only when loadable states or represented content differ.
+Excluded-only and unknown-external-only rows remain visible but do not inflate
+that count. It does not merge instructions, choose a winner, or infer
+cross-agent precedence.
+
 ## Normalized contract
 
 The public `PolicyMap` type lives in `src/types.ts`. Its top-level fields are:
@@ -101,6 +113,12 @@ sources do not have readable local content.
 
 Stable IDs are derived from the agent, source kind, and display path. They are
 identifiers for a matching inspection context, not permanent database keys.
+
+The versioned `PolicyComparison` contract also lives in `src/types.ts`. It
+contains the shared target context, a difference summary, grouped source arrays,
+and each agent's surface label, assumptions, diagnostics, and context estimate.
+Arrays are intentional because multiple source entries can share one redacted
+display path.
 
 ## Agent adapters
 
@@ -132,7 +150,7 @@ src/
   frontmatter/  YAML parsing and documented-field validation
   fs/           contained, bounded reads and directory traversal
   match/        glob, brace, applyTo, and paths matching
-  render/       human and JSON output
+  render/       single-agent and cross-agent human output plus JSON
   security/     best-effort credential redaction and bounded excerpts
   cli.ts        command parsing and process exit behavior
   constants.ts  safety bounds and documented limits

@@ -81,6 +81,95 @@ describe("cli smoke (built dist)", () => {
     expect(map.surface).toBe("GitHub Copilot CLI");
   });
 
+  it("compare produces a cross-agent matrix with evidence", () => {
+    const r = cli([
+      "compare",
+      fix("copilot/basic/src/app.ts"),
+      "--cwd",
+      fix("copilot/basic"),
+      "--root",
+      fix("copilot/basic"),
+    ]);
+    expect(r.code).toBe(0);
+    expect(r.stdout).toContain("Codex CLI | Claude Code | Cursor IDE | GitHub Copilot CLI");
+    expect(r.stdout).toContain("14 meaningful local differences");
+    expect(r.stdout).toContain("WHY THEY DIFFER");
+    expect(r.stdout).toContain(
+      "claude —: not discovered by this modeled adapter",
+    );
+    expect(r.stdout).toContain("INSPECTION NOTES");
+    expect(r.stdout).toContain("[info] no-precedence-defined");
+    expect(r.stdout).not.toContain("Use npm for installs across this repository.");
+  });
+
+  it("compare keeps warning diagnostics visible in human output", () => {
+    const r = cli([
+      "compare",
+      fix("codex/nested/apps/api/src/auth.ts"),
+      "--cwd",
+      fix("codex/nested/apps/api"),
+      "--root",
+      fix("codex/nested"),
+    ]);
+    expect(r.code).toBe(0);
+    expect(r.stdout).toContain("[warning] possible-conflict");
+  });
+
+  it("compare --json emits a versioned comparison contract", () => {
+    const r = cli([
+      "compare",
+      fix("codex/nested/apps/api/src/auth.ts"),
+      "--cwd",
+      fix("codex/nested/apps/api"),
+      "--root",
+      fix("codex/nested"),
+      "--json",
+    ]);
+    expect(r.code).toBe(0);
+    const comparison = JSON.parse(r.stdout) as {
+      version: string;
+      command: string;
+      summary: { meaningfulDifferences: number };
+      agents: Record<string, { surface: string }>;
+    };
+    expect(comparison.version).toBe("1");
+    expect(comparison.command).toBe("compare");
+    expect(comparison.summary.meaningfulDifferences).toBe(2);
+    expect(Object.keys(comparison.agents)).toEqual([
+      "codex",
+      "claude",
+      "cursor",
+      "copilot",
+    ]);
+  });
+
+  it("compare rejects missing targets and incompatible options", () => {
+    const missing = cli(["compare"]);
+    const agent = cli(["compare", "x.ts", "--agent", "codex"]);
+    const content = cli(["compare", "x.ts", "--show-content"]);
+
+    expect(missing.code).toBe(1);
+    expect(missing.stderr).toMatch(/requires a <target>/);
+    expect(agent.code).toBe(1);
+    expect(agent.stderr).toMatch(/checks all supported agents/);
+    expect(content.code).toBe(1);
+    expect(content.stderr).toMatch(/not supported for compare/);
+  });
+
+  it("compare without explicit context does not print absolute project paths", () => {
+    const root = temp("apm-cli-compare-path-");
+    const target = path.join(root, "src", "app.ts");
+    writeFile(path.join(root, ".git", ".keep"), "");
+    writeFile(path.join(root, "AGENTS.md"), "Public fixture policy.\n");
+    writeFile(target, "export {};\n");
+
+    const r = cli(["compare", target]);
+
+    expect(r.code).toBe(0);
+    expect(r.stdout).not.toContain(root);
+    expect(r.stdout).toContain("assuming the target's directory");
+  });
+
   it("discover runs without a concrete target", () => {
     const r = cli([
       "discover",

@@ -1,13 +1,17 @@
 {
   "name": "agent-policy-map",
   "version": "0.1.0",
-  "description": "A local, read-only debugger for coding-agent instructions, precedence, and conflicts.",
+  "description": "Compare which coding-agent instructions apply to one file across Codex, Claude Code, Cursor, and Copilot.",
   "keywords": [
     "agents",
     "codex",
+    "codex-cli",
     "claude-code",
     "cursor",
     "copilot",
+    "github-copilot",
+    "agent-policy",
+    "cli",
     "AGENTS.md",
     "instructions",
     "precedence"

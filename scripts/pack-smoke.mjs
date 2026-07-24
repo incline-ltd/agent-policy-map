@@ -88,6 +88,26 @@ try {
     "installed CLI did not discover the fixture AGENTS.md",
   );
 
+  const comparisonOutput = run(
+    bin,
+    [
+      "compare",
+      path.join(fixtureDir, "src", "app.ts"),
+      "--cwd",
+      fixtureDir,
+      "--root",
+      fixtureDir,
+      "--json",
+    ],
+    consumerDir,
+  );
+  const comparison = JSON.parse(comparisonOutput);
+  assert(comparison.command === "compare", "installed CLI returned the wrong comparison command");
+  assert(
+    comparison.summary.meaningfulDifferences === 1,
+    "installed CLI did not report the cross-agent AGENTS.md difference",
+  );
+
   const libraryUrl = pathToFileURL(
     path.join(consumerDir, "node_modules", "agent-policy-map", "dist", "index.js"),
   ).href;
@@ -99,6 +119,16 @@ try {
     root: fixtureDir,
   });
   assert(libraryMap.version === "1", "installed library export did not return a PolicyMap");
+  const libraryComparison = library.compare({
+    target: path.join(fixtureDir, "src", "app.ts"),
+    cwd: fixtureDir,
+    root: fixtureDir,
+    env: {},
+  });
+  assert(
+    libraryComparison.command === "compare",
+    "installed library export did not return a PolicyComparison",
+  );
 
   process.stdout.write("Packed install smoke passed.\n");
 } finally {

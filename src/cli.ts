@@ -4,7 +4,9 @@ import path from "node:path";
 import type { PolicyMap, PolicySource } from "./types.js";
 import type { InspectContext } from "./adapters/types.js";
 import { inspect, inspectWithContext } from "./core/inspect.js";
+import { compare } from "./core/compare.js";
 import { renderHuman } from "./render/human.js";
+import { renderComparisonHuman } from "./render/compare-human.js";
 import { renderJson } from "./render/json.js";
 import { AGENT_NAMES, isAgentName } from "./adapters/registry.js";
 import { redact } from "./security/redact.js";
@@ -15,11 +17,12 @@ const USAGE = `agent-policy-map — explain which coding-agent instructions appl
 
 Usage:
   agent-policy-map inspect <target> --agent <codex|claude|cursor|copilot> [options]
+  agent-policy-map compare <target> [options]
   agent-policy-map discover --agent <agent> [options]
   agent-policy-map explain <source-id> --agent <agent> --target <file> [options]
 
 Options:
-  --agent <name>     One of: ${AGENT_NAMES.join(", ")}
+  --agent <name>     Required for inspect, discover, and explain; compare checks all
   --cwd <path>       Simulated launch working directory (Codex discovery depends on it)
   --root <path>      Containment root (defaults to nearest .git ancestor, else cwd)
   --include-user     Also inspect documented user/home and managed locations
@@ -139,6 +142,29 @@ function runInspect(cli: Cli): void {
   emit(map, cli, ctx);
 }
 
+function runCompare(cli: Cli): void {
+  const target = cli.positionals[1];
+  if (!target) fail("compare requires a <target> file path");
+  if (cli.values.agent !== undefined) {
+    fail("compare checks all supported agents; remove --agent");
+  }
+  if (cli.values["show-content"]) {
+    fail("--show-content is not supported for compare");
+  }
+
+  const comparison = compare({
+    target,
+    includeUser: cli.values["include-user"] ?? false,
+    ...(cli.values.cwd !== undefined ? { cwd: cli.values.cwd } : {}),
+    ...(cli.values.root !== undefined ? { root: cli.values.root } : {}),
+  });
+  process.stdout.write(
+    (cli.values.json
+      ? renderJson(comparison)
+      : renderComparisonHuman(comparison)) + "\n",
+  );
+}
+
 function runDiscover(cli: Cli): void {
   const agent = requireAgent(cli.values.agent);
   const cwd = cli.values.cwd ?? process.cwd();
@@ -218,6 +244,9 @@ function main(): void {
     case "inspect":
       runInspect(cli);
       break;
+    case "compare":
+      runCompare(cli);
+      break;
     case "discover":
       runDiscover(cli);
       break;
@@ -225,7 +254,9 @@ function main(): void {
       runExplain(cli);
       break;
     default:
-      fail(`unknown command "${command}". Expected inspect, discover, or explain.`);
+      fail(
+        `unknown command "${command}". Expected inspect, compare, discover, or explain.`,
+      );
   }
 }
 

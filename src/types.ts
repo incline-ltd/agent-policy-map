@@ -86,3 +86,39 @@ export type PolicyMap = {
   diagnostics: Diagnostic[];
   context: ContextEstimate;
 };
+
+export type ComparisonAgent = {
+  /** The concrete surface modelled by this adapter. */
+  surface: string;
+  assumptions: string[];
+  diagnostics: Diagnostic[];
+  context: ContextEstimate;
+};
+
+export type ComparisonSource = {
+  /** Redacted display path shared by the grouped source entries. */
+  path: string;
+  /**
+   * True when loadable states or represented local content differ by agent.
+   * Excluded-only and unknown-external-only rows are not counted.
+   */
+  meaningfulDifference: boolean;
+  /** Arrays preserve multiple entries that share one display path. */
+  agents: Record<AgentName, PolicySource[]>;
+};
+
+export type PolicyComparison = {
+  version: "1";
+  command: "compare";
+  target: string;
+  cwd: string;
+  root: string;
+  includeUser: boolean;
+  summary: {
+    sourcePaths: number;
+    meaningfulDifferences: number;
+    hasMeaningfulDifferences: boolean;
+  };
+  sources: ComparisonSource[];
+  agents: Record<AgentName, ComparisonAgent>;
+};

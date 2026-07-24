@@ -4,14 +4,14 @@
 [![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933)](https://nodejs.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**See which `AGENTS.md`, `CLAUDE.md`, Cursor rules, and GitHub Copilot
-instructions apply to one file, and why.**
+**Compare what Codex CLI, Claude Code, Cursor IDE, and GitHub Copilot CLI can
+see for one file, side by side.**
 
 `agent-policy-map` is a local, read-only debugger for coding-agent instruction
 discovery, activation, ordering, and possible conflicts. It needs no account,
 API key, telemetry service, network service, or LLM.
 
-![Agent Policy Map reports active nested instructions and a possible package manager conflict](docs/assets/agent-policy-map-demo.svg)
+![Agent Policy Map compares one target across Codex CLI, Claude Code, Cursor IDE, and GitHub Copilot CLI](docs/assets/agent-policy-map-demo.svg)
 
 ## 60-second demo
 
@@ -22,15 +22,16 @@ git clone https://github.com/ashishkaloge/agent-policy-map.git
 cd agent-policy-map
 npm ci
 npm run build
-node dist/cli.js inspect fixtures/codex/nested/apps/api/src/auth.ts \
-  --agent codex \
-  --cwd fixtures/codex/nested/apps/api \
-  --root fixtures/codex/nested
+node dist/cli.js compare fixtures/copilot/basic/src/app.ts \
+  --cwd fixtures/copilot/basic \
+  --root fixtures/copilot/basic
 ```
 
-The result shows both applicable `AGENTS.md` files, their documented order,
-and a possible npm-versus-pnpm conflict. Discovered instruction content is
-treated as data and is never executed or modified.
+The result is a four-column policy matrix. It shows, for example, that
+`AGENTS.md` is active for Codex, Cursor, and Copilot in this fixture but is not
+discovered by Claude Code. It also gives the documented reason behind every
+meaningful difference. Discovered instruction content is treated as data and
+is never printed, executed, or modified by `compare`.
 
 This repository is a public preview. The npm package name is declared in the
 project metadata but is not published yet; use the source checkout until the
@@ -87,25 +88,38 @@ Use `agent-policy-map` to:
 
 ## Compare four agents
 
-Run the same target through every supported adapter after completing the source
-setup above:
+Run one command after completing the source setup above:
 
 ```bash
-for agent_name in codex claude cursor copilot; do
-  echo "=== $agent_name ==="
-  node dist/cli.js inspect src/cli.ts \
-    --agent "$agent_name" \
-    --cwd . \
-    --root .
-done
+node dist/cli.js compare src/cli.ts --cwd . --root .
 ```
 
-The differences are the result: one agent may activate `AGENTS.md`, another may
-expect `CLAUDE.md`, and another may leave account or session rules as
-`unknown-external`. This command compares documented local discovery; it does
-not claim that a live model followed those instructions.
+The matrix separates meaningful local differences from unavailable account,
+managed, and session state. `—` means that the modeled adapter did not discover
+that source path; it does not mean the source was explicitly excluded.
+
+`compare` models the exact supported surfaces shown in its header: Codex CLI,
+Claude Code, Cursor IDE, and GitHub Copilot CLI. It does not claim parity with
+the Codex app, Claude Desktop, Cursor CLI, or Copilot for VS Code.
 
 ## Commands
+
+### `compare`
+
+Compare documented instruction discovery for one target across all four
+supported surfaces.
+
+```text
+agent-policy-map compare <target> [options]
+```
+
+```bash
+npm run cli -- compare apps/api/src/auth.ts --cwd . --root .
+```
+
+`compare` does not accept `--agent` because all supported adapters are always
+checked. It also does not accept `--show-content`; the comparison contains
+metadata and evidence-backed reasons, never instruction bodies.
 
 ### `inspect`
 
@@ -176,11 +190,11 @@ ID. A source ID only resolves within its matching inspection context.
 
 | Option | Meaning |
 | --- | --- |
-| `--agent <name>` | Required agent: `codex`, `claude`, `cursor`, or `copilot`. |
+| `--agent <name>` | Required for `inspect`, `discover`, and `explain`. `compare` checks all four agents. |
 | `--cwd <path>` | Simulated launch working directory. |
 | `--root <path>` | Containment root. Defaults to the nearest `.git` ancestor, otherwise cwd. |
 | `--include-user` | Also inspect supported user, home, managed, and configured custom locations. Off by default. |
-| `--show-content` | For `inspect` and `discover`, include available bounded local content after best-effort credential redaction. Off by default. |
+| `--show-content` | For `inspect` and `discover`, include available bounded local content after best-effort credential redaction. Not supported by `compare`. |
 | `--json` | Emit machine-readable JSON. |
 | `-h`, `--help` | Show CLI help. |
 
@@ -195,8 +209,8 @@ content is required.
 
 ## Exit behavior
 
-- Help and a completed inspection, discovery, or explanation exit with code
-  `0`.
+- Help and a completed comparison, inspection, discovery, or explanation exit
+  with code `0`.
 - Invalid commands, missing required arguments, unknown agents, and source IDs
   that do not exist in the supplied context exit non-zero.
 - Diagnostics do not change the process exit code, including diagnostics whose
@@ -267,13 +281,20 @@ ASSUMPTIONS
 
 ## JSON output
 
-Add `--json` to `inspect`, `discover`, or `explain`. When invoking the local CLI
-through an npm script, pass `--silent` so npm's script banner does not precede
-the JSON on standard output:
+Add `--json` to `compare`, `inspect`, `discover`, or `explain`. When invoking
+the local CLI through an npm script, pass `--silent` so npm's script banner
+does not precede the JSON on standard output:
 
 ```bash
-npm --silent run cli -- inspect src/cli.ts --agent codex --cwd . --root . --json
+npm --silent run cli -- compare src/cli.ts --cwd . --root . --json
 ```
+
+`compare` emits a versioned `PolicyComparison` containing:
+
+- the shared target, launch cwd, containment root, and user-scope choice;
+- a summary count of meaningful local differences;
+- source paths grouped into per-agent arrays so duplicate entries are not lost;
+- each surface's assumptions, diagnostics, and context estimate.
 
 `inspect` and `discover` emit a versioned `PolicyMap` containing:
 
@@ -283,9 +304,10 @@ npm --silent run cli -- inspect src/cli.ts --agent codex --cwd . --root . --json
 - structured `diagnostics`;
 - byte, line, and approximate-token context totals.
 
-Full instruction content is omitted by default. For `inspect` and `discover`,
-`--show-content --json` adds a `contents` object for loadable local sources
-after best-effort redaction. `explain` does not return full content.
+Full instruction content is omitted by default. `compare` never returns it.
+For `inspect` and `discover`, `--show-content --json` adds a `contents` object
+for loadable local sources after best-effort redaction. `explain` does not
+return full content.
 
 ## Redaction and sensitive content
 
@@ -350,14 +372,13 @@ Official behavior references:
 
 ## Library API
 
-The package also exports the inspection pipeline, renderers, adapter registry,
-redaction helpers, and public TypeScript types.
+The package also exports the comparison and inspection pipelines, renderers,
+adapter registry, redaction helpers, and public TypeScript types.
 
 ```ts
-import { inspect, renderJson, type PolicyMap } from "agent-policy-map";
+import { compare, renderJson, type PolicyComparison } from "agent-policy-map";
 
-const map: PolicyMap = inspect({
-  agent: "codex",
+const map: PolicyComparison = compare({
   target: "src/cli.ts",
   cwd: ".",
   root: ".",
@@ -372,8 +393,9 @@ Consumers should check `version` before relying on the JSON shape.
 ## Architecture
 
 This is one Node.js and TypeScript package, not a monorepo. Agent-specific
-behavior is isolated behind one normalized policy-map contract; shared safety,
-matching, diagnostics, and rendering stay agent-independent.
+behavior is isolated behind one normalized policy-map contract. `compare`
+composes those same results and does not add separate discovery logic. Shared
+safety, matching, diagnostics, and rendering stay agent-independent.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the data flow, module boundaries,
 extension rules, and test strategy.

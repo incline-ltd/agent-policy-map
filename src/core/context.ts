@@ -75,8 +75,8 @@ export function buildContext(input: BuildContextInput): BuiltContext {
     cwd = path.dirname(targetAbs);
     assumptions.push(
       input.agent === "codex"
-        ? `No --cwd given. Codex discovery depends on the launch working directory; assuming the target's directory (${cwd}). Pass --cwd to model a different launch directory.`
-        : `No --cwd given; assuming the target's directory (${cwd}).`,
+        ? "No --cwd given. Codex discovery depends on the launch working directory; assuming the target's directory. Pass --cwd to model a different launch directory."
+        : "No --cwd given; assuming the target's directory.",
     );
   }
 
@@ -90,7 +90,7 @@ export function buildContext(input: BuildContextInput): BuiltContext {
     } else {
       root = cwd;
       assumptions.push(
-        `No project root marker (.git) found at or above cwd; using cwd as the containment root (${cwd}).`,
+        "No project root marker (.git) found at or above cwd; using cwd as the containment root.",
       );
     }
   }
@@ -99,13 +99,13 @@ export function buildContext(input: BuildContextInput): BuiltContext {
   if (!isInside(root, cwd)) {
     root = cwd;
     assumptions.push(
-      `Provided root does not contain cwd; using cwd as the containment root (${cwd}).`,
+      "Provided root does not contain cwd; using cwd as the containment root.",
     );
   }
 
   if (!targetExists && (input.mode ?? "inspect") === "inspect") {
     assumptions.push(
-      `Target ${input.target} does not exist on disk; path-based matching is still evaluated against its path.`,
+      "The target does not exist on disk; path-based matching is still evaluated against its path.",
     );
   }
 

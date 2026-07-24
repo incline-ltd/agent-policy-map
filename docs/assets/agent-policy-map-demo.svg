@@ -1,36 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title description">
-  <title id="title">Agent Policy Map terminal demonstration</title>
-  <desc id="description">The CLI finds two active Codex instruction files and reports a possible npm versus pnpm conflict.</desc>
-  <rect width="1200" height="620" rx="24" fill="#0b1220"/>
-  <rect x="1" y="1" width="1198" height="618" rx="23" fill="none" stroke="#253247" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title description">
+  <title id="title">Agent Policy Map cross-agent comparison</title>
+  <desc id="description">The CLI compares one file across Codex CLI, Claude Code, Cursor IDE, and GitHub Copilot CLI, showing one meaningful AGENTS.md difference.</desc>
+  <rect width="1200" height="650" rx="24" fill="#0b1220"/>
+  <rect x="1" y="1" width="1198" height="648" rx="23" fill="none" stroke="#253247" stroke-width="2"/>
 
   <circle cx="42" cy="38" r="7" fill="#ef4444"/>
   <circle cx="66" cy="38" r="7" fill="#f59e0b"/>
   <circle cx="90" cy="38" r="7" fill="#22c55e"/>
-  <text x="600" y="44" text-anchor="middle" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16">agent-policy-map</text>
+  <text x="600" y="44" text-anchor="middle" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16">agent-policy-map compare</text>
   <line x1="0" y1="68" x2="1200" y2="68" stroke="#253247" stroke-width="2"/>
 
-  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
-    <text x="40" y="112" fill="#22c55e">$</text>
-    <text x="64" y="112" fill="#e2e8f0">agent-policy-map inspect apps/api/src/auth.ts</text>
-    <text x="64" y="142" fill="#e2e8f0">--agent codex --cwd apps/api --root .</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <text x="40" y="112" fill="#22c55e" font-size="20">$</text>
+    <text x="64" y="112" fill="#e2e8f0" font-size="20">agent-policy-map compare src/cli.ts --cwd . --root .</text>
 
-    <text x="40" y="194" fill="#94a3b8">Agent:</text>
-    <text x="142" y="194" fill="#f8fafc">codex (Codex CLI)</text>
-    <text x="40" y="226" fill="#94a3b8">Target:</text>
-    <text x="142" y="226" fill="#f8fafc">./apps/api/src/auth.ts</text>
+    <text x="40" y="160" fill="#94a3b8" font-size="18">Target:</text>
+    <text x="244" y="160" fill="#f8fafc" font-size="18">./src/cli.ts</text>
+    <text x="40" y="190" fill="#94a3b8" font-size="18">Surfaces:</text>
+    <text x="244" y="190" fill="#f8fafc" font-size="18">Codex CLI | Claude Code | Cursor IDE | GitHub Copilot CLI</text>
+    <text x="40" y="220" fill="#94a3b8" font-size="18">Result:</text>
+    <text x="244" y="220" fill="#4ade80" font-size="18" font-weight="700">1 meaningful local difference</text>
 
-    <text x="40" y="282" fill="#4ade80" font-weight="700">ACTIVE</text>
-    <text x="40" y="318" fill="#f8fafc">1. ./AGENTS.md</text>
-    <text x="390" y="318" fill="#94a3b8">[codex-agents-md]</text>
-    <text x="64" y="348" fill="#94a3b8">root instruction loaded first</text>
-    <text x="40" y="386" fill="#f8fafc">2. ./apps/api/AGENTS.md</text>
-    <text x="390" y="386" fill="#94a3b8">[codex-agents-md]</text>
-    <text x="64" y="416" fill="#94a3b8">nested instruction loaded after the root</text>
+    <text x="40" y="276" fill="#f8fafc" font-size="17" font-weight="700">SOURCE</text>
+    <text x="430" y="276" fill="#f8fafc" font-size="17" font-weight="700">CODEX</text>
+    <text x="570" y="276" fill="#f8fafc" font-size="17" font-weight="700">CLAUDE</text>
+    <text x="710" y="276" fill="#f8fafc" font-size="17" font-weight="700">CURSOR</text>
+    <text x="850" y="276" fill="#f8fafc" font-size="17" font-weight="700">COPILOT</text>
+    <text x="1010" y="276" fill="#f8fafc" font-size="17" font-weight="700">DIFF</text>
+    <line x1="40" y1="292" x2="1120" y2="292" stroke="#334155" stroke-width="2"/>
 
-    <text x="40" y="472" fill="#fbbf24" font-weight="700">DIAGNOSTICS</text>
-    <text x="40" y="510" fill="#fbbf24">[warn] possible-conflict</text>
-    <text x="64" y="542" fill="#e2e8f0">./AGENTS.md endorses npm</text>
-    <text x="64" y="574" fill="#e2e8f0">./apps/api/AGENTS.md endorses pnpm</text>
+    <text x="40" y="330" fill="#e2e8f0" font-size="18">./AGENTS.md</text>
+    <text x="430" y="330" fill="#4ade80" font-size="18">active</text>
+    <text x="570" y="330" fill="#94a3b8" font-size="18">—</text>
+    <text x="710" y="330" fill="#4ade80" font-size="18">active</text>
+    <text x="850" y="330" fill="#4ade80" font-size="18">active</text>
+    <text x="1010" y="330" fill="#fbbf24" font-size="18">yes</text>
+
+    <text x="40" y="388" fill="#fbbf24" font-size="18" font-weight="700">WHY THEY DIFFER</text>
+    <text x="40" y="426" fill="#f8fafc" font-size="18">./AGENTS.md</text>
+    <text x="64" y="454" fill="#94a3b8" font-size="17">codex</text>
+    <text x="150" y="454" fill="#4ade80" font-size="17">active</text>
+    <text x="242" y="454" fill="#e2e8f0" font-size="17">root-to-launch-cwd discovery</text>
+    <text x="64" y="486" fill="#94a3b8" font-size="17">claude</text>
+    <text x="150" y="486" fill="#94a3b8" font-size="17">—</text>
+    <text x="242" y="486" fill="#e2e8f0" font-size="17">not discovered by this modeled adapter</text>
+    <text x="64" y="518" fill="#94a3b8" font-size="17">cursor</text>
+    <text x="150" y="518" fill="#4ade80" font-size="17">active</text>
+    <text x="242" y="518" fill="#e2e8f0" font-size="17">directory subtree applies to target</text>
+    <text x="64" y="550" fill="#94a3b8" font-size="17">copilot</text>
+    <text x="150" y="550" fill="#4ade80" font-size="17">active</text>
+    <text x="242" y="550" fill="#e2e8f0" font-size="17">repository-to-target discovery</text>
+
+    <text x="40" y="598" fill="#94a3b8" font-size="16">— means not discovered by that modeled adapter. Local, read-only, no LLM.</text>
+    <text x="40" y="624" fill="#64748b" font-size="15">Static discovery evidence; not proof that a live agent followed instructions.</text>
   </g>
 </svg>

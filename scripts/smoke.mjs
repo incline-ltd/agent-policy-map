@@ -106,6 +106,27 @@ check("cursor human output is grouped by state", () => {
   }
 });
 
+check("compare reports meaningful differences across all four surfaces", () => {
+  const out = runCli([
+    "compare",
+    fix("codex/nested/apps/api/src/auth.ts"),
+    "--cwd",
+    fix("codex/nested/apps/api"),
+    "--root",
+    fix("codex/nested"),
+    "--json",
+  ]);
+  const comparison = JSON.parse(out);
+  if (comparison.command !== "compare") throw new Error("bad command");
+  if (comparison.summary.meaningfulDifferences !== 2) {
+    throw new Error("unexpected meaningful-difference count");
+  }
+  const surfaces = Object.values(comparison.agents).map((agent) => agent.surface);
+  for (const want of ["Codex CLI", "Claude Code", "Cursor IDE", "GitHub Copilot CLI"]) {
+    if (!surfaces.includes(want)) throw new Error(`missing surface ${want}`);
+  }
+});
+
 if (failures > 0) {
   console.error(`\n${failures} smoke check(s) failed.`);
   process.exit(1);
