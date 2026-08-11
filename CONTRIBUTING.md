@@ -7,7 +7,7 @@ Thanks for helping improve `agent-policy-map`.
 Requires Node.js 20 or newer. CI covers Node.js 20 and 22.
 
 ```bash
-git clone https://github.com/ashishkaloge/agent-policy-map.git
+git clone https://github.com/incline-ltd/agent-policy-map.git
 cd agent-policy-map
 npm ci
 npm run check

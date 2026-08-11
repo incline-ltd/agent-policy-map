@@ -7,7 +7,7 @@ After releases begin, this section will list supported release lines.
 
 ## Report a vulnerability privately
 
-Use [GitHub private vulnerability reporting](https://github.com/ashishkaloge/agent-policy-map/security/advisories/new).
+Use [GitHub private vulnerability reporting](https://github.com/incline-ltd/agent-policy-map/security/advisories/new).
 This is the required reporting route. Repository maintainers must enable it
 before the first public release and keep it available for supported versions.
 

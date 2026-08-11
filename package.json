@@ -20,11 +20,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ashishkaloge/agent-policy-map.git"
+    "url": "git+https://github.com/incline-ltd/agent-policy-map.git"
   },
-  "homepage": "https://github.com/ashishkaloge/agent-policy-map#readme",
+  "homepage": "https://github.com/incline-ltd/agent-policy-map#readme",
   "bugs": {
-    "url": "https://github.com/ashishkaloge/agent-policy-map/issues"
+    "url": "https://github.com/incline-ltd/agent-policy-map/issues"
   },
   "type": "module",
   "engines": {
