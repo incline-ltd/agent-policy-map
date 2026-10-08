@@ -445,6 +445,7 @@ security-relevant policy results privately. See [SECURITY.md](SECURITY.md).
 - [coding-agent-guidelines](https://github.com/incline-ltd/coding-agent-guidelines)
 - [production-launch-prompts](https://github.com/incline-ltd/production-launch-prompts)
 - [awesome-agentic-engineering](https://github.com/incline-ltd/awesome-agentic-engineering)
+- [awesome-agent-instructions](https://github.com/incline-ltd/awesome-agent-instructions)
 
 ## License
 
